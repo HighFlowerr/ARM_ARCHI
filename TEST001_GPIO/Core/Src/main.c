@@ -114,6 +114,9 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
+
+  // git upload test!@#!@#!@#
+
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
