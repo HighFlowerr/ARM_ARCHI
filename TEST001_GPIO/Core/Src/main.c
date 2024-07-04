@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,7 +43,12 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+int __io_putchar(int ch)
+{
+	HAL_UART_Transmit(&huart2,&ch,1,10); // 10ms
+	return ch;
+}
+//int __io_getchar(void)
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,6 +62,30 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+int mode = 0;
+//int a = 0;
+int count = 0;
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	switch(GPIO_Pin)
+	{
+	case  B1_Pin:
+		mode++;
+		if(mode>1) mode = 0;
+	break;
+	case  Switch_Pin:
+		printf("%d times pressed\r\n", count++);
+		puts("Button이 눌렸습니다....\r");
+	break;
+	}
+	//mode ++;
+	//if(mode > 1) mode = 0;
+	//mode =0;
+	//if(a == 0) a = 1;
+	//else a = 0;
+}
+
+
 /* USER CODE END 0 */
 
 /**
@@ -65,6 +94,7 @@ static void MX_USART2_UART_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -89,13 +119,49 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  printf("\033[2J\n"); //clear screen 2J ?���? 초기?��
+  printf("\033[1;1H\n");// y;xH : (x,y)move axis
+  printf("\033[2J\033[1;1H\n");// y;xH : (x,y)move axis
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(mode == 1)
+	  	  {
+	  		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,1); //PA5
+	  		  HAL_Delay(500); //500ms
+	  		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,0); //PA5
+	  		  HAL_Delay(500); //500ms
+
+	  	  }
+	  /*
+	  switch(mode){
+	  case 1 :
+			  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,1); //PA5
+			  HAL_Delay(500); //500ms
+			  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,0); //PA5
+			  HAL_Delay(500); //500ms
+			  break;
+	  case 0 :
+		  	  break;
+	  default :
+		  break;
+	  }
+	  */
+	  /*
+	  a = 0;
+	  //int a = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);//PC13 : B1
+	  if(a == 0)
+	  {
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,1); //PA5
+		  HAL_Delay(500); //500ms
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,0); //PA5
+		  HAL_Delay(500); //500ms
+
+	  }
+	  */
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -114,9 +180,6 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-
-  // git upload test!@#!@#!@#
-
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
@@ -217,6 +280,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Switch_Pin */
+  GPIO_InitStruct.Pin = Switch_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Switch_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
