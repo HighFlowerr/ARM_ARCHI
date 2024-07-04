@@ -18,10 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,12 +43,11 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-int __io_putchar(int ch)
-{
-	HAL_UART_Transmit(&huart2,&ch,1,10); // 10ms
-	return ch;
-}
-//int __io_getchar(void)
+char s[200];	//출력 버퍼 output buffer
+char b[100];	//입력 버퍼 input buffer
+
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,6 +64,7 @@ static void MX_USART2_UART_Init(void);
 int mode = 0;
 //int a = 0;
 int count = 0;
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	switch(GPIO_Pin)
@@ -72,10 +72,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	case  B1_Pin:
 		mode++;
 		if(mode>1) mode = 0;
-	break;
+		break;
 	case  Switch_Pin:
 		printf("%d times pressed\r\n", count++);
-		puts("Button이 눌렸습니다....\r");
+		//sprintf(s, "%d times pressed", count++); puts(s);
 	break;
 	}
 	//mode ++;
@@ -119,9 +119,14 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  printf("\033[2J\n"); //clear screen 2J ?���? 초기?��
-  printf("\033[1;1H\n");// y;xH : (x,y)move axis
-  printf("\033[2J\033[1;1H\n");// y;xH : (x,y)move axis
+  //printf("\033[2J\n"); //clear screen 2J
+  //printf("\033[1;1H\n");// y;xH : (x,y)move axis
+
+  ProgramStart();
+  setvbuf(stdin, NULL, _IONBF, 0);
+  int i; scanf("%d", &i);
+  printf("input your number : %d\r\n", i);
+  count = i;
   /* USER CODE END 2 */
 
   /* Infinite loop */
