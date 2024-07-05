@@ -109,7 +109,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	  if(mode == 1)
+	  	  	  {
+	  	  		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,1); //PA5
+	  	  		  HAL_Delay(500); //500ms
+	  	  		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin,0); //PA5
+	  	  		  HAL_Delay(500); //500ms
 
+	  	  	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
