@@ -89,16 +89,17 @@ void Trigger()
 double Distance()
 {
 	Trigger();
+	//Wait until Echo Rising Edge
 	while(HAL_GPIO_ReadPin(Echo_GPIO_Port, Echo_Pin) != 1);
 	int t1 = htim5.Instance->CNT;
 	//Wait until Echo Falling Edge
 	while(HAL_GPIO_ReadPin(Echo_GPIO_Port, Echo_Pin) != 0);
 	int t2 = htim5.Instance->CNT;
 	double dist = (t2 - t1) * (0.000170); // meter
-	dist *= 100; //meter --> cm
 
 	return dist;
 }
+
 /* USER CODE END 0 */
 
 /**
@@ -133,7 +134,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  ProgramStart("UltraSonic");
+  ProgramStart("UltraSonic_GPIO");
   HAL_TIM_Base_Start(&htim5); //Timer Start -> (address handle timer5)
   /* USER CODE END 2 */
 
@@ -143,19 +144,23 @@ int main(void)
   {
 
 	  //Trigger Signal
-	  HAL_GPIO_WritePin(Trig_GPIO_Port, Trig_Pin, 1);
+	  /*HAL_GPIO_WritePin(Trig_GPIO_Port, Trig_Pin, 1);
 	  microDelay(10); //Can't make 10us HAL_Delay
 	  HAL_GPIO_WritePin(Trig_GPIO_Port, Trig_Pin, 0);
+	  microDelay(20);*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 	  //Wait until Echo Rising Edge
-	  double d= Distance();
-	  printf("\033[10;30HDistance : %.2f cm   \r\n", d);
+	  double d = Distance() * 100;
+	  printf("\033[?251\n"); //cursor off
+	  printf("\033[10;10HDistance : %.2f cm   ", d); //upper half
+	  printf("\033[11;10HDistance : %.2f cm   \033[9;10H\n", d); //lower half
 	  HAL_Delay(100);
+  }
   /* USER CODE END 3 */
- }
 }
+
 /**
   * @brief System Clock Configuration
   * @retval None

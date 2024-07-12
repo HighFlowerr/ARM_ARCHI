@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := TEST004_US
+BUILD_ARTIFACT_NAME := TEST004_US_GPIO
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-TEST004_US.elf \
+TEST004_US_GPIO.elf \
 
 MAP_FILES += \
-TEST004_US.map \
+TEST004_US_GPIO.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-TEST004_US.list \
+TEST004_US_GPIO.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: TEST004_US.elf secondary-outputs
+main-build: TEST004_US_GPIO.elf secondary-outputs
 
 # Tool invocations
-TEST004_US.elf TEST004_US.map: $(OBJS) $(USER_OBJS) C:\A_My_Work\ARM_STM32\TEST004_US\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "TEST004_US.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\A_My_Work\ARM_STM32\TEST004_US\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TEST004_US.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+TEST004_US_GPIO.elf TEST004_US_GPIO.map: $(OBJS) $(USER_OBJS) C:\A_My_Work\ARM_STM32\TEST004_US\STM32F411RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TEST004_US_GPIO.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\A_My_Work\ARM_STM32\TEST004_US\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TEST004_US_GPIO.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-TEST004_US.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "TEST004_US.list"
+TEST004_US_GPIO.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "TEST004_US_GPIO.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) TEST004_US.elf TEST004_US.list TEST004_US.map default.size.stdout
+	-$(RM) TEST004_US_GPIO.elf TEST004_US_GPIO.list TEST004_US_GPIO.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
