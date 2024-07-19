@@ -115,7 +115,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   ProgramStart("UltraSonic_PWM");
-  printf("\033[?25l"); //cursor off
+  //printf("\033[?25l"); //cursor off
   HAL_TIM_Base_Start(&htim5);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 

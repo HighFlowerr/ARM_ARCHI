@@ -64,11 +64,27 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-short val[3];
+
+union
+{
+   char    buf[500];
+   short    v1[10];
+   int    v2[20];
+   long    v3[10];
+} buf;
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
 
 }
+
+int mode = 0;
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+   if(++mode > 5) mode = 1;
+   cls();   //Terminal screen clear
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -108,19 +124,84 @@ int main(void)
 
   ProgramStart("ADC - DMA");
   HAL_TIM_Base_Start(&htim3);
-  HAL_ADC_Start_DMA(&hadc1, val, 3);
+  HAL_ADC_Start_DMA(&hadc1, &buf, 3);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int lm = 1;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  int z = HAL_GPIO_ReadPin(Z_Axis_GPIO_Port, Z_Axis_Pin);
-	  printf("\033[?25l");
-	  printf("\033[4;0HP(%d,%d,%d):%d   \r\n", val[0], val[1], z, val[2]);
+     switch(mode)
+     {
+     case 1:
+        if(lm != mode) {cls(); lm = mode;}
+        int z = HAL_GPIO_ReadPin(Z_Axis_GPIO_Port,Z_Axis_Pin);
+        printf("\033[3;0H   ?��?���? 좌표: P(%d,%d,%d):%d    \n", buf.v1[0], buf.v1[1], z, buf.v1[2]);
+        break;
+     case 2:
+        if(lm != mode) {cls(); lm = mode;}
+        printf("\033[7;0H            < 메모리 덤프 모드 >\r\n");
+        printf("\033[9;0H");
+        for (int j = 0; j < 15; j++)
+        {
+           for (int i = 0; i < 16; i++)
+           {
+              printf("%02x ",(unsigned)buf.buf[16*j+i]);
+              if(i == 7) printf("  ");
+           }
+           printf("\r\n");
+        }
+        break;
+     case 3:
+        if(lm != mode) {cls(); lm = mode;}
+        printf("\033[7;0H            < 메모리 쇼트 모드 >\r\n");
+        printf("\033[9;0H");
+        for (int j = 0; j < 15; j++)
+        {
+           for (int i = 0; i < 16; i++)
+           {
+              printf("%04x ",(unsigned)buf.v1[16*j+i]);
+              if(i == 7) printf("  ");
+           }
+           printf("\r\n");
+        }
+        break;
+     case 4:
+        if(lm != mode) {cls(); lm = mode;}
+        printf("\033[7;0H            < 메모리 인트 모드 >\r\n");
+        printf("\033[9;0H");
+        for (int j = 0; j < 20; j++)
+        {
+           for (int i = 0; i < 4; i++)
+           {
+              printf("%08x ",(unsigned)buf.v2[4*j+i]);
+              if(i == 7) printf("  ");
+           }
+           printf("\r\n");
+        }
+     case 5:
+        if(lm != mode) {cls(); lm = mode;}
+        printf("\033[7;0H            < 메모리 롱 모드 >\r\n");
+        printf("\033[9;0H");
+        for (int j = 0; j < 20; j++)
+        {
+           for (int i = 0; i < 4; i++)
+           {
+              printf("%08X ",(unsigned)buf.v3[4*j+i]);
+              if(i == 7) printf("  ");
+           }
+           printf("\r\n");
+        }
+     break;
+     default:
+     break;
+     }
   }
   /* USER CODE END 3 */
 }
@@ -358,7 +439,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
@@ -374,6 +455,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(Z_Axis_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
