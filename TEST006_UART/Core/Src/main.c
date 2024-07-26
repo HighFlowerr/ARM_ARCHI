@@ -73,7 +73,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
    buf[idx1++] = dum;
    buf[idx1] = 0;
 
-   HAL_UART_Receive_IT(&huart2, &dum, 1);
+   HAL_UART_Receive_IT(&huart2, &dum, 1);  // 1회성
 
    /*
    if(idx1 > 0 && dum == 0x0d)

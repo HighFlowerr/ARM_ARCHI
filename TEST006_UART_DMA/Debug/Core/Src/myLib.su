@@ -1,7 +1,8 @@
-../Core/Src/myLib.c:5:5:__io_putchar	16	static
-../Core/Src/myLib.c:14:6:Dump	48	static
-../Core/Src/myLib.c:38:6:cls	8	static
-../Core/Src/myLib.c:46:6:Cursor	16	static
-../Core/Src/myLib.c:59:5:__io_getchar	16	static
-../Core/Src/myLib.c:75:6:Wait	8	static
-../Core/Src/myLib.c:80:6:ProgramStart	16	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:5:5:__io_putchar	16	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:14:6:Dump	48	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:38:6:cls	8	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:46:6:Cursor	16	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:59:5:GetBuffer	24	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:85:5:__io_getchar	16	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:101:6:Wait	8	static
+C:/A_My_Work/ARM_STM32/myLib/myLib.c:106:6:ProgramStart	16	static
